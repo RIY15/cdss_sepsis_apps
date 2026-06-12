@@ -110,13 +110,13 @@ html, body, [class*="css"], .stApp, .stMarkdown {
 
 .stApp { background-color: var(--bg-page); }
 
-/* Sidebar */
+/* ── SIDEBAR BASE ──────────────────────────────────────────────── */
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
     border-right: none;
 }
 
-/* Sidebar text content (specific, not aggressive *) */
+/* Sidebar text content */
 section[data-testid="stSidebar"] h1,
 section[data-testid="stSidebar"] h2,
 section[data-testid="stSidebar"] h3,
@@ -128,7 +128,7 @@ section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] * {
     color: #ffffff !important;
 }
 
-/* Sidebar file uploader — preserve native dark text inside white dropzone */
+/* Sidebar file uploader */
 section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {
     background: rgba(255,255,255,0.95);
     border: 1px dashed rgba(255,255,255,0.5);
@@ -145,7 +145,7 @@ section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button {
     border: 1px solid var(--primary) !important;
 }
 
-/* Sidebar primary buttons (demo, download) */
+/* Sidebar primary buttons */
 section[data-testid="stSidebar"] .stButton button {
     background: var(--accent) !important;
     color: #ffffff !important;
@@ -171,27 +171,156 @@ section[data-testid="stSidebar"] [data-testid="stDownloadButton"] button p {
     color: #ffffff !important;
 }
 
-/* PERMANENT SIDEBAR — disable collapse functionality entirely */
-button[data-testid="collapsedControl"],
-button[data-testid="stSidebarCollapseButton"],
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarCollapseButton"] {
-    display: none !important;
-    visibility: hidden !important;
+/* ── DESKTOP: sidebar selalu terbuka di lebar tetap ────────────── */
+@media (min-width: 769px) {
+    /* Sembunyikan tombol collapse di desktop */
+    button[data-testid="collapsedControl"],
+    button[data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    section[data-testid="stSidebar"] {
+        min-width: 280px !important;
+        max-width: 280px !important;
+        width: 280px !important;
+        transform: translateX(0) !important;
+        visibility: visible !important;
+    }
+
+    section[data-testid="stSidebar"] > div {
+        width: 280px !important;
+    }
 }
 
-/* Ensure sidebar always visible at fixed width */
-section[data-testid="stSidebar"] {
-    min-width: 280px !important;
-    max-width: 280px !important;
-    width: 280px !important;
-    transform: translateX(0) !important;
-    visibility: visible !important;
+/* ── MOBILE: sidebar menjadi toggle/overlay drawer ─────────────── */
+@media (max-width: 768px) {
+    /* Tampilkan tombol toggle collapse bawaan Streamlit di mobile */
+    button[data-testid="collapsedControl"],
+    button[data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarCollapseButton"] {
+        display: flex !important;
+        visibility: visible !important;
+    }
+
+    /* Sidebar berperilaku sebagai overlay/drawer: posisi absolute */
+    section[data-testid="stSidebar"] {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100vh !important;
+        z-index: 9999 !important;
+        min-width: 280px !important;
+        max-width: 85vw !important;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.25) !important;
+        transition: transform 0.3s ease !important;
+    }
+
+    /* Saat sidebar terbuka di mobile: konten utama tetap full-width */
+    .main .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        max-width: 100% !important;
+    }
+
+    /* Tombol toggle collapse (hamburger) Streamlit — styling agar menonjol */
+    button[data-testid="collapsedControl"] {
+        background: var(--primary) !important;
+        color: white !important;
+        border-radius: 0 8px 8px 0 !important;
+        width: 36px !important;
+        height: 36px !important;
+        top: 12px !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.2) !important;
+    }
+
+    /* Mobile navbar bar: strip tipis di atas untuk judul + toggle hint */
+    .mobile-topbar {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        background: var(--primary-dark);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 0 0 12px 12px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* Step indicator — wrap ke 2 baris di mobile */
+    .steps {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        padding: 10px 14px !important;
+    }
+    .step { font-size: 11.5px !important; }
+    .step-arrow { display: none !important; }
+
+    /* Metric cards — susun vertikal di mobile */
+    [data-testid="column"] {
+        min-width: 0 !important;
+    }
+
+    /* Tabel dan dataframe — scroll horizontal */
+    .stDataFrame, [data-testid="stDataFrame"] {
+        overflow-x: auto !important;
+    }
+
+    /* Triage grid — 1 kolom di mobile */
+    .triage-card {
+        margin-bottom: 12px !important;
+    }
+
+    /* App header responsif */
+    .app-title { font-size: 16px !important; }
+    .app-subtitle { font-size: 11px !important; }
+    .app-icon { width: 34px !important; height: 34px !important; font-size: 18px !important; }
+
+    /* Metric value lebih kecil di mobile */
+    .metric-value { font-size: 22px !important; }
+    .triage-prob  { font-size: 26px !important; }
+
+    /* Main content area: pastikan tidak tertimpa sidebar */
+    .main { margin-left: 0 !important; }
+
+    /* Padding konten utama lebih compact */
+    .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+    }
 }
 
-/* Ensure sidebar content is not hidden */
-section[data-testid="stSidebar"] > div {
-    width: 280px !important;
+/* ── MOBILE topbar: sembunyikan di desktop ──────────────────────── */
+@media (min-width: 769px) {
+    .mobile-topbar { display: none !important; }
+}
+
+/* ── RESPONSIVE: metric cards — stack 2x2 di layar sempit ─────── */
+@media (max-width: 768px) {
+    /* Kolom Streamlit di mobile: paksa wrap & full width */
+    [data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+    }
+    [data-testid="stHorizontalBlock"] > [data-testid="stVerticalBlock"] {
+        min-width: 45% !important;
+        flex: 1 1 45% !important;
+    }
+
+    /* Triage grid: 1 kolom penuh di mobile */
+    [data-testid="stHorizontalBlock"].triage-row > [data-testid="stVerticalBlock"] {
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    /* Imputation table: scroll horizontal */
+    .imputation-table-wrap {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
 }
 
 header[data-testid="stHeader"] { display: none; }
@@ -235,6 +364,7 @@ footer { visibility: hidden; }
 /* Step indicator */
 .steps {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 24px;
     padding: 14px 20px;
@@ -484,6 +614,18 @@ footer { visibility: hidden; }
     font-weight: 500 !important;
 }
 .stButton button[kind="secondary"]:hover { background: var(--bg-hover) !important; }
+
+/* ── RESPONSIVE: metrics-grid ─────────────────────────────────── */
+/* Di mobile, bungkus metrics akan membuat kolom wrap menjadi 2x2  */
+.metrics-grid [data-testid="stHorizontalBlock"] {
+    flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+    .metrics-grid [data-testid="stHorizontalBlock"] > div {
+        flex: 1 1 48% !important;
+        min-width: 48% !important;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -832,6 +974,14 @@ def render_steps(current: str):
 
 def render_app_header():
     """Top header with title and reset button."""
+    # ── Mobile topbar: petunjuk untuk membuka sidebar di HP ──────────────
+    st.markdown("""
+    <div class="mobile-topbar">
+        <span style="font-size:18px;">☰</span>
+        <span>ICU Monitor · Ketuk ← untuk menu</span>
+    </div>
+    """, unsafe_allow_html=True)
+
     has_data = st.session_state.view != "empty"
     col_title, col_btn = st.columns([4, 1])
 
@@ -1094,6 +1244,19 @@ def view_empty():
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.info("Belum punya file? Coba salah satu **contoh data** di panel sebelah kiri.")
+
+    # CSS tambahan untuk step cards di mobile
+    st.markdown("""
+    <style>
+    @media (max-width: 768px) {
+        /* Step cards: susun vertikal di mobile */
+        [data-testid="stHorizontalBlock"] > [data-testid="stVerticalBlock"] {
+            min-width: 100% !important;
+            flex: 1 1 100% !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -1399,7 +1562,8 @@ def view_impute_preview():
             tbody_rows.append(f'<tr>{"".join(row_cells)}</tr>')
 
         table_html = (
-            '<div style="overflow-x: auto; max-height: 420px; overflow-y: auto; '
+            '<div class="imputation-table-wrap" style="overflow-x: auto; '
+            '-webkit-overflow-scrolling: touch; max-height: 420px; overflow-y: auto; '
             'border: 1px solid #e2e8f0; border-radius: 8px;">'
             '<table style="width: 100%; border-collapse: collapse; '
             'font-family: \'Plus Jakarta Sans\', sans-serif;">'
@@ -1597,7 +1761,8 @@ def render_triage_overview(stay_ids: List, predictions: Dict):
     )
     st.markdown(banner_html, unsafe_allow_html=True)
 
-    # Cards in grid (3 per row)
+    # Cards in grid — 3 per row di desktop, 1 per row di mobile (via CSS)
+    # Gunakan CSS class wrapper agar mobile tetap 1 kolom
     cols_per_row = 3
     for i in range(0, len(stay_ids), cols_per_row):
         row_sids = stay_ids[i:i + cols_per_row]
@@ -1718,7 +1883,8 @@ def render_patient_dashboard(sid, result: Dict):
             "untuk prediksi kondisi terkini.",
         )
 
-    # Top metrics
+    # Top metrics — 4 kolom di desktop, 2x2 di mobile via CSS flex-wrap
+    st.markdown('<div class="metrics-grid">', unsafe_allow_html=True)
     col_a, col_b, col_c, col_d = st.columns([1.4, 1, 1, 1])
 
     with col_a:
@@ -1769,6 +1935,8 @@ def render_patient_dashboard(sid, result: Dict):
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
